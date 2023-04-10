@@ -14,7 +14,6 @@ class Sprite:
         self.sprite_left = ['Sprites/walk_W/0.png', 'Sprites/walk_W/1.png',
                             'Sprites/walk_W/2.png', 'Sprites/walk_W/3.png']
 
-
         self.sprite_right = ['Sprites/walk_E/0.png', 'Sprites/walk_E/1.png',
                             'Sprites/walk_E/2.png', 'Sprites/walk_E/3.png']
 
@@ -24,6 +23,8 @@ class Sprite:
         self.sprite_south = ['Sprites/walk_S/0.png', 'Sprites/walk_S/1.png',
                              'Sprites/walk_S/2.png', 'Sprites/walk_S/3.png']
 
+        self.x = 0
+        self.y = 0
         self.canvas = canvas
         self.images = [ImageTk.PhotoImage(Image.open(img)) for img in self.sprite_idle]
         self.frame = 0
@@ -33,24 +34,19 @@ class Sprite:
         self.state = 'idle' #initializes the state to idle when the sprite is created
 
     def update(self):
-
+        print(self.x,self.y)
         if self.changeInX==0 and self.changeInY==0:
-            print(self.state)
             self.state='idle'
         elif self.changeInX<0:
-            print(self.state)
             self.state ='left'
         elif self.changeInX > 0:
-            print(self.state)
             self.state = 'right'
         elif self.changeInY < 0:
-            print(self.state)
             self.state = 'up'
         elif self.changeInY > 0:
-            print(self.state)
             self.state = 'down'
 
-        print(self.changeInY,self.changeInX)
+        #print(self.changeInY,self.changeInX)
 
         if self.state=='idle':
             self.images = [ImageTk.PhotoImage(Image.open(img)) for img in self.sprite_idle]
@@ -78,32 +74,39 @@ class Sprite:
 
     def move_left(self):
         self.changeInY = 0
-        self.changeInX = -10
-        self.canvas.move(self.id, self.changeInX, self.changeInY)
+        self.changeInX = -50
+        if self.x >= 50:
+            self.x = self.x + self.changeInX
+            self.canvas.move(self.id, self.changeInX, self.changeInY)
 
     def move_right(self):
         self.changeInY = 0
-        self.changeInX = 10
-        self.canvas.move(self.id, self.changeInX, 0)
+        self.changeInX = 50
+        if self.x <= 550:
+            self.x = self.x + self.changeInX
+            self.canvas.move(self.id, self.changeInX, self.changeInY)
 
     def move_up(self):
         self.changeInX = 0
-        self.changeInY =-10
-        self.canvas.move(self.id, self.changeInX, self.changeInY)
-
+        self.changeInY =-50
+        if self.y >=50:
+            self.y = self.y + self.changeInY
+            self.canvas.move(self.id, self.changeInX, self.changeInY)
 
     def move_down(self):
         self.changeInX = 0
-        self.changeInY = 10
-        self.canvas.move(self.id, self.changeInX,self.changeInY)
+        self.changeInY = 50
+        if self.y <=350:
+            self.y = self.y + self.changeInY
+            self.canvas.move(self.id, self.changeInX,self.changeInY)
 
     def stop(self):
         self.changeInX=0
         self.changeInY=0
-        self.state = 'idle'
+
 
 root = tk.Tk()
-canvas = tk.Canvas(root, width=4000, height=4000)
+canvas = tk.Canvas(root, width=800, height=600)
 canvas.pack()
 
 background_image= Image.open('Sprites/CATTO.jpg')
@@ -115,26 +118,31 @@ canvas.create_image(0,0,image=background_map,anchor="nw")
 sprite = Sprite(canvas, 100, 100,)
 
 #Assigning keybinds
-def handle_key(event):
-    if event.keysym == 'Up':
+def keyPress(event):
+    if event.keysym == 'w':
         sprite.move_up()
-        print("up")
-    elif event.keysym == 'Down':
+    elif event.keysym == 's':
         sprite.move_down()
-    elif event.keysym == 'Left':
+    elif event.keysym == 'a':
         sprite.move_left()
-    elif event.keysym == 'Right':
+    elif event.keysym == 'd':
         sprite.move_right()
-    else:
-        sprite.stop()
 
-canvas.bind_all('<KeyPress>', handle_key)
+def keyRelease(event):
+    sprite.stop()
+
+canvas.bind_all('<KeyPress>', keyPress)
+canvas.bind_all('<KeyRelease>', keyRelease)
+
+
+
 
 #Gameloop
 while True:
+
     sprite.update()
     canvas.update()
-    time.sleep(0.05)
+    time.sleep(0.005)
 
 root.mainloop()
 
