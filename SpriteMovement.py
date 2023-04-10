@@ -100,7 +100,7 @@ class Sprite:
     def move_down(self):
         self.changeInX = 0
         self.changeInY = 50
-        if self.y <=350:
+        if self.y <=300:
             self.y = self.y + self.changeInY
             self.canvas.move(self.id, self.changeInX,self.changeInY)
 
@@ -110,10 +110,10 @@ class Sprite:
 
 
 root = tk.Tk()
-canvas = tk.Canvas(root, width=800, height=600)
+canvas = tk.Canvas(root, width=800, height=550)
 canvas.pack()
 
-background_image= Image.open('Sprites/mental-asylum-haunted-allan-swart.jpg')
+background_image= Image.open('Sprites/padded-cell-white-mental-hospital-64868959.jpg')
 background_map=ImageTk.PhotoImage(background_image)
 canvas.create_image(0,0,image=background_map,anchor="nw")
 
