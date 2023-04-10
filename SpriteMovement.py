@@ -4,6 +4,7 @@ from PIL import Image, ImageTk
 import time
 class Sprite:
     def __init__(self, canvas, x, y):
+        #loading arrays of the image files
         self.sprite_idle = ['Sprites/idle/0.png','Sprites/idle/1.png',
                               'Sprites/idle/2.png','Sprites/idle/3.png',
                               'Sprites/idle/4.png','Sprites/idle/5.png',
@@ -22,19 +23,22 @@ class Sprite:
 
         self.sprite_south = ['Sprites/walk_S/0.png', 'Sprites/walk_S/1.png',
                              'Sprites/walk_S/2.png', 'Sprites/walk_S/3.png']
-
+        #coordinates
         self.x = 0
         self.y = 0
         self.canvas = canvas
+        #initilizes image to idle
         self.images = [ImageTk.PhotoImage(Image.open(img)) for img in self.sprite_idle]
         self.frame = 0
         self.id = canvas.create_image(x,y,image=self.images[self.frame])
+        #velocity in x y
         self.changeInX= 0
         self.changeInY= 0
         self.state = 'idle' #initializes the state to idle when the sprite is created
 
     def update(self):
         print(self.x,self.y)
+        #changes the state based on x and y velocity.
         if self.changeInX==0 and self.changeInY==0:
             self.state='idle'
         elif self.changeInX<0:
@@ -47,7 +51,7 @@ class Sprite:
             self.state = 'down'
 
         #print(self.changeInY,self.changeInX)
-
+        #Loads the appropriate img array based on the current state
         if self.state=='idle':
             self.images = [ImageTk.PhotoImage(Image.open(img)) for img in self.sprite_idle]
             self.frame = (self.frame+1)%len(self.images)
@@ -109,7 +113,7 @@ root = tk.Tk()
 canvas = tk.Canvas(root, width=800, height=600)
 canvas.pack()
 
-background_image= Image.open('Sprites/CATTO.jpg')
+background_image= Image.open('Sprites/mental-asylum-haunted-allan-swart.jpg')
 background_map=ImageTk.PhotoImage(background_image)
 canvas.create_image(0,0,image=background_map,anchor="nw")
 
@@ -131,6 +135,7 @@ def keyPress(event):
 def keyRelease(event):
     sprite.stop()
 
+#binds the commands, I think?
 canvas.bind_all('<KeyPress>', keyPress)
 canvas.bind_all('<KeyRelease>', keyRelease)
 
