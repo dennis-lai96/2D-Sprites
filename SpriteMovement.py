@@ -12,7 +12,7 @@ class Sprite:
                               'Sprites/idle/10.png','Sprites/idle/11.png']
 
         self.sprite_left = ['Sprites/walk_W/0.png', 'Sprites/walk_W/1.png',
-                            'Sprites/walk_w/2.png', 'Sprites/walk_W/3.png']
+                            'Sprites/walk_W/2.png', 'Sprites/walk_W/3.png']
 
 
         self.sprite_right = ['Sprites/walk_E/0.png', 'Sprites/walk_E/1.png',
@@ -23,7 +23,6 @@ class Sprite:
 
         self.sprite_south = ['Sprites/walk_S/0.png', 'Sprites/walk_S/1.png',
                              'Sprites/walk_S/2.png', 'Sprites/walk_S/3.png']
-
 
         self.canvas = canvas
         self.images = [ImageTk.PhotoImage(Image.open(img)) for img in self.sprite_idle]
@@ -36,16 +35,22 @@ class Sprite:
     def update(self):
 
         if self.changeInX==0 and self.changeInY==0:
+            print(self.state)
             self.state='idle'
         elif self.changeInX<0:
+            print(self.state)
             self.state ='left'
         elif self.changeInX > 0:
+            print(self.state)
             self.state = 'right'
-        elif self.changeInY > 0:
-            self.state = 'up'
         elif self.changeInY < 0:
-            self.state='down'
+            print(self.state)
+            self.state = 'up'
+        elif self.changeInY > 0:
+            print(self.state)
+            self.state = 'down'
 
+        print(self.changeInY,self.changeInX)
 
         if self.state=='idle':
             self.images = [ImageTk.PhotoImage(Image.open(img)) for img in self.sprite_idle]
@@ -61,7 +66,6 @@ class Sprite:
             self.canvas.itemconfig(self.id, image=self.images[self.frame])
         elif self.state == 'up':
             print("state")
-
             self.images = [ImageTk.PhotoImage(Image.open(img)) for img in self.sprite_north]
             self.frame = (self.frame+1)%len(self.images)
             self.canvas.itemconfig(self.id, image=self.images[self.frame])
@@ -73,25 +77,30 @@ class Sprite:
 
 
     def move_left(self):
+        self.changeInY = 0
         self.changeInX = -10
-        self.canvas.move(self.id, self.changeInX, 0)
+        self.canvas.move(self.id, self.changeInX, self.changeInY)
 
     def move_right(self):
+        self.changeInY = 0
         self.changeInX = 10
         self.canvas.move(self.id, self.changeInX, 0)
 
     def move_up(self):
+        self.changeInX = 0
         self.changeInY =-10
-        self.canvas.move(self.id,0 , self.changeInY)
+        self.canvas.move(self.id, self.changeInX, self.changeInY)
 
 
     def move_down(self):
+        self.changeInX = 0
         self.changeInY = 10
-        self.canvas.move(self.id, 0,self.changeInY)
+        self.canvas.move(self.id, self.changeInX,self.changeInY)
 
     def stop(self):
         self.changeInX=0
         self.changeInY=0
+        self.state = 'idle'
 
 root = tk.Tk()
 canvas = tk.Canvas(root, width=4000, height=4000)
@@ -117,7 +126,7 @@ def handle_key(event):
     elif event.keysym == 'Right':
         sprite.move_right()
     else:
-        sprite.state = 'idle'
+        sprite.stop()
 
 canvas.bind_all('<KeyPress>', handle_key)
 
@@ -125,7 +134,7 @@ canvas.bind_all('<KeyPress>', handle_key)
 while True:
     sprite.update()
     canvas.update()
-    time.sleep(0.0005)
+    time.sleep(0.05)
 
 root.mainloop()
 
