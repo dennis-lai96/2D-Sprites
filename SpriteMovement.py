@@ -2,7 +2,34 @@ from tkinter import *
 import tkinter as tk
 from PIL import Image, ImageTk
 import time
-class Sprite:
+
+class spookyFish:
+    def __init__(self,canvas,x,y):
+
+        self.sprite_idle = ['spookyFish/0.png','spookyFish/1.png'
+                            ,'spookyFish/2.png','spookyFish/3.png'
+                            ,'spookyFish/4.png','spookyFish/5.png']
+
+        #coordinates
+        self.x = 0
+        self.y = 0
+        self.canvas = canvas
+        #initilizes image to idle
+        self.images = [ImageTk.PhotoImage(Image.open(img)) for img in self.sprite_idle]
+        self.frame = 0
+        self.id = canvas.create_image(x,y,image=self.images[self.frame])
+        #velocity in x y
+        self.changeInX= 0
+        self.changeInY= 0
+        self.state = 'idle' #initializes the state to idle when the sprite is created
+
+    def update(self):
+        self.images = [ImageTk.PhotoImage(Image.open(img)) for img in self.sprite_idle]
+        self.frame = (self.frame+1)%len(self.images)
+        self.canvas.itemconfig(self.id, image=self.images[self.frame])
+
+
+class Penguin:
     def __init__(self, canvas, x, y):
         #loading arrays of the image files
         self.sprite_idle = ['Sprites/idle/0.png','Sprites/idle/1.png',
@@ -119,21 +146,23 @@ canvas.create_image(0,0,image=background_map,anchor="nw")
 
 
 
-sprite = Sprite(canvas, 100, 100,)
+penguin = Penguin(canvas, 100, 100,)
+spooky = spookyFish(canvas, 500, 300)
+
 
 #Assigning keybinds
 def keyPress(event):
     if event.keysym == 'w':
-        sprite.move_up()
+        penguin.move_up()
     elif event.keysym == 's':
-        sprite.move_down()
+        penguin.move_down()
     elif event.keysym == 'a':
-        sprite.move_left()
+        penguin.move_left()
     elif event.keysym == 'd':
-        sprite.move_right()
+        penguin.move_right()
 
 def keyRelease(event):
-    sprite.stop()
+    penguin.stop()
 
 #binds the commands, I think?
 canvas.bind_all('<KeyPress>', keyPress)
@@ -145,23 +174,9 @@ canvas.bind_all('<KeyRelease>', keyRelease)
 #Gameloop
 while True:
 
-    sprite.update()
+    spooky.update()
+    penguin.update()
     canvas.update()
     time.sleep(0.005)
 
 root.mainloop()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
