@@ -77,6 +77,11 @@ class Penguin:
 
     def update(self):
         print(self.x,self.y)
+        if self.check_collision(spooky):
+            # Collision occurred
+            self.canvas.delete(self.id)  # Remove the penguin from the canvas
+            return
+
         #changes the state based on x and y velocity.
         if self.changeInX==0 and self.changeInY==0:
             self.state='idle'
