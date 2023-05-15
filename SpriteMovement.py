@@ -5,6 +5,7 @@ import time
 
 class spookyFish:
     def __init__(self,canvas,x,y):
+        
 
         self.sprite_idle = ['spookyFish/0.png','spookyFish/1.png'
                             ,'spookyFish/2.png','spookyFish/3.png'
@@ -63,6 +64,17 @@ class Penguin:
         self.changeInY= 0
         self.state = 'idle' #initializes the state to idle when the sprite is created
 
+    def check_collision(self, other):
+        penguin_bbox = self.canvas.bbox(self.id)
+        spooky_bbox = other.canvas.bbox(other.id)
+        overlap = not (
+                penguin_bbox[2] < spooky_bbox[0] or  #penguin is left of spookyFish
+                penguin_bbox[0] > spooky_bbox[2] or  #penguin is right of spookyFish
+                penguin_bbox[3] < spooky_bbox[1] or  #penguin is above spookyFish
+                penguin_bbox[1] > spooky_bbox[3]     #penguin is below spookyFish
+        )
+        return overlap
+
     def update(self):
         print(self.x,self.y)
         #changes the state based on x and y velocity.
@@ -104,6 +116,9 @@ class Penguin:
 
 
     def move_left(self):
+        if self.check_collision(spooky):
+            self.stop()
+            return
         self.changeInY = 0
         self.changeInX = -50
         if self.x >= 50:
@@ -111,6 +126,9 @@ class Penguin:
             self.canvas.move(self.id, self.changeInX, self.changeInY)
 
     def move_right(self):
+        if self.check_collision(spooky):
+            self.stop()
+            return
         self.changeInY = 0
         self.changeInX = 50
         if self.x <= 550:
@@ -118,6 +136,9 @@ class Penguin:
             self.canvas.move(self.id, self.changeInX, self.changeInY)
 
     def move_up(self):
+        if self.check_collision(spooky):
+            self.stop()
+            return
         self.changeInX = 0
         self.changeInY =-50
         if self.y >=50:
@@ -125,6 +146,9 @@ class Penguin:
             self.canvas.move(self.id, self.changeInX, self.changeInY)
 
     def move_down(self):
+        if self.check_collision(spooky):
+            self.stop()
+            return
         self.changeInX = 0
         self.changeInY = 50
         if self.y <=300:
